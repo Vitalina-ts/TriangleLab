@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Information about product";
+    var products = new List<Product>
+    {
+        new() { Name = "Bread", Price = 10 },
+        new() { Name = "Milk", Price = 11 },
+        new() { Name = "Cheese", Price = 140 },
+        new() { Name = "Sausage", Price = 110 },
+        new() { Name = "Potato", Price = 7 },
+        new() { Name = "Banana", Price = 23 },
+        new() { Name = "Tomato", Price = 25 },
+        new() { Name = "Candy", Price = 75 }
+    };
+}
+<h1>Information about product</h1>
+<table>
+    <thead><tr><th>Name</th><th>Price</th></tr></thead>
+    <tbody>
+    @foreach (var product in products)
+    {
+        <tr><td>@product.Name</td><td>@product.Price</td></tr>
+    }
+    </tbody>
+</table>

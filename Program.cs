@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<TriangleLab.Services.ITimeService, TriangleLab.Services.SimpleTimeService>();
 
 var app = builder.Build();
 

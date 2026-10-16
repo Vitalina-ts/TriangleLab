@@ -1,0 +1,9 @@
+@{ ViewData["Title"] = "Our Supermarkets"; }
+<h1>Our Supermarkets</h1>
+<ul>
+@foreach (string supermarket in ViewBag.Supermarkets)
+{
+    <li>@supermarket</li>
+}
+</ul>
+<p>Total: @ViewBag.Supermarkets.Count</p>
