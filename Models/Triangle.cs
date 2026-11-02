@@ -1,3 +1,4 @@
+
 using System.Globalization;
 
 namespace TriangleLab.Models;
@@ -8,185 +9,123 @@ public class Triangle
     public double Side2 { get; set; }
     public double Side3 { get; set; }
 
-    public Triangle()
+    // Порожній конструктор
+    public Triangle() { }
+
+    // Конструктор із трьома сторонами
+    public Triangle(double a, double b, double c)
     {
+        Side1 = a;
+        Side2 = b;
+        Side3 = c;
     }
 
-    public Triangle(double side1, double side2, double side3)
+    // Порівняння чисел із похибкою
+    public static bool Equal(double a, double b)
     {
-        Side1 = side1;
-        Side2 = side2;
-        Side3 = side3;
+        return Math.Abs(a - b) < 0.00001;
     }
 
-    public static bool ApproximatelyEqual(double left, double right)
-    {
-        var difference = Math.Abs(left - right);
-
-        if (Math.Abs(left) < 1e-12 && Math.Abs(right) < 1e-12)
-        {
-            return true;
-        }
-
-        if (Math.Abs(left) < 1e-12)
-        {
-            return difference < 1e-8;
-        }
-
-        var tolerance = Math.Abs(left) * 0.00001;
-        return difference < tolerance;
-    }
-
+    // Перевірка існування трикутника
     public bool IsValid()
     {
-        if (Side1 <= 0 || Side2 <= 0 || Side3 <= 0)
-        {
-            return false;
-        }
-
-        return (Side1 + Side2 > Side3)
-            && (Side1 + Side3 > Side2)
-            && (Side2 + Side3 > Side1);
+        return Side1 > 0 && Side2 > 0 && Side3 > 0
+            && Side1 + Side2 > Side3
+            && Side1 + Side3 > Side2
+            && Side2 + Side3 > Side1;
     }
 
+    // Периметр
     public double GetPerimeter()
     {
         return Side1 + Side2 + Side3;
     }
 
+    // Площа за формулою Герона
     public double GetArea()
     {
-        if (!IsValid())
-        {
-            return 0;
-        }
+        if (!IsValid()) return 0;
 
-        var semiPerimeter = GetPerimeter() / 2.0;
-        var area = Math.Sqrt(
-            semiPerimeter
-            * (semiPerimeter - Side1)
-            * (semiPerimeter - Side2)
-            * (semiPerimeter - Side3));
+        double p = GetPerimeter() / 2;
 
-        return area;
+        return Math.Sqrt(p * (p - Side1)
+            * (p - Side2) * (p - Side3));
     }
 
+    // Сортування сторін
     public double[] GetSortedSides()
     {
-        var sides = new[] { Side1, Side2, Side3 };
+        double[] sides = { Side1, Side2, Side3 };
         Array.Sort(sides);
         return sides;
     }
 
+    // Прямокутний трикутник
     public bool IsRightAngled()
     {
-        if (!IsValid())
-        {
-            return false;
-        }
+        if (!IsValid()) return false;
 
-        var sides = GetSortedSides();
-        var a = sides[0];
-        var b = sides[1];
-        var c = sides[2];
+        var s = GetSortedSides();
 
-        return ApproximatelyEqual(a * a + b * b, c * c);
+        return Equal(s[0] * s[0] + s[1] * s[1],
+                     s[2] * s[2]);
     }
 
+    // Рівносторонній трикутник
     public bool IsEquilateral()
     {
-        if (!IsValid())
-        {
-            return false;
-        }
-
-        return ApproximatelyEqual(Side1, Side2)
-            && ApproximatelyEqual(Side2, Side3);
+        return IsValid()
+            && Equal(Side1, Side2)
+            && Equal(Side2, Side3);
     }
 
+    // Рівнобедрений трикутник
     public bool IsIsosceles()
     {
-        if (!IsValid())
-        {
-            return false;
-        }
-
-        if (IsEquilateral())
-        {
-            return true;
-        }
-
-        return ApproximatelyEqual(Side1, Side2)
-            || ApproximatelyEqual(Side1, Side3)
-            || ApproximatelyEqual(Side2, Side3);
+        return IsValid()
+            && (Equal(Side1, Side2)
+            || Equal(Side1, Side3)
+            || Equal(Side2, Side3));
     }
 
+    // Рівність двох трикутників
     public bool IsCongruentTo(Triangle other)
     {
         if (other == null || !IsValid() || !other.IsValid())
-        {
             return false;
-        }
 
-        var first = GetSortedSides();
-        var second = other.GetSortedSides();
+        var a = GetSortedSides();
+        var b = other.GetSortedSides();
 
-        return ApproximatelyEqual(first[0], second[0])
-            && ApproximatelyEqual(first[1], second[1])
-            && ApproximatelyEqual(first[2], second[2]);
+        return Equal(a[0], b[0])
+            && Equal(a[1], b[1])
+            && Equal(a[2], b[2]);
     }
 
+    // Подібність двох трикутників
     public bool IsSimilarTo(Triangle other)
     {
         if (other == null || !IsValid() || !other.IsValid())
-        {
             return false;
-        }
 
-        var first = GetSortedSides();
-        var second = other.GetSortedSides();
+        var a = GetSortedSides();
+        var b = other.GetSortedSides();
 
-        return AreRatiosApproximatelyEqual(first[0], second[0], first[1], second[1])
-            && AreRatiosApproximatelyEqual(first[1], second[1], first[2], second[2])
-            && AreRatiosApproximatelyEqual(first[0], second[0], first[2], second[2]);
+        double k = a[0] / b[0];
+
+        return Equal(a[1] / b[1], k)
+            && Equal(a[2] / b[2], k);
     }
 
-    private static bool AreRatiosApproximatelyEqual(double leftA, double leftB, double rightA, double rightB)
-    {
-        if (ApproximatelyEqual(leftB, 0) || ApproximatelyEqual(rightB, 0))
-        {
-            return false;
-        }
-
-        return ApproximatelyEqual(leftA * rightB, leftB * rightA);
-    }
-
+    // Текстова інформація про трикутник
     public string GetInfoText()
     {
-        var sortedSides = GetSortedSides();
-        var perimeter = GetPerimeter();
-        var area = GetArea();
+        var s = GetSortedSides();
+        double p = GetPerimeter();
 
-        var reducedFirst = FormatValue(sortedSides[0] / perimeter);
-        var reducedSecond = FormatValue(sortedSides[1] / perimeter);
-        var reducedThird = FormatValue(sortedSides[2] / perimeter);
-
-        var result = string.Join(
-            Environment.NewLine,
-            "------------------------------------------------------------",
-            "Triangle:",
-            $"({FormatValue(sortedSides[0])}, {FormatValue(sortedSides[1])}, {FormatValue(sortedSides[2])})",
-            "Reduced:",
-            $"({FormatValue(sortedSides[0])}/{FormatValue(perimeter)}, {FormatValue(sortedSides[1])}/{FormatValue(perimeter)}, {FormatValue(sortedSides[2])}/{FormatValue(perimeter)})",
-            $"Area = {FormatValue(area)}",
-            $"Perimeter = {FormatValue(perimeter)}",
-            "------------------------------------------------------------");
-
-        return result;
-    }
-
-    private static string FormatValue(double value)
-    {
-        return value.ToString("0.######", CultureInfo.InvariantCulture);
+        return $"Triangle: ({s[0]}, {s[1]}, {s[2]})\n"
+            + $"Reduced: ({s[0] / p:F3}, {s[1] / p:F3}, {s[2] / p:F3})\n"
+            + $"Area = {GetArea():F3}\n"
+            + $"Perimeter = {p:F3}";
     }
 }

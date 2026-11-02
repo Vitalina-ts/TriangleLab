@@ -1,0 +1,13 @@
+@model Dictionary<string, int>
+@{ ViewData["Title"] = "Our shopping list"; }
+<h1>Our shopping list</h1>
+<table>
+    <thead><tr><th>Name</th><th>Quantity</th></tr></thead>
+    <tbody>
+    @foreach (var product in Model)
+    {
+        <tr><td>@product.Key</td><td>@product.Value</td></tr>
+    }
+    </tbody>
+</table>
+@await Html.PartialAsync("_TimeToBuy")
