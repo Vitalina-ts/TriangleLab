@@ -1,0 +1,11 @@
+@model User
+@{ ViewData["Title"] = "Create User"; }
+<h1>Create User</h1>
+<p>Fields can only be populated from the query string and cannot be edited.</p>
+<div asp-validation-summary="All"></div>
+<form asp-controller="Users" asp-action="Save" asp-route-id="@Model.Id" asp-route-name="@Model.Name" asp-route-email="@Model.Email" method="post">
+    <p><label asp-for="Id"></label><br /><input asp-for="Id" readonly /></p>
+    <p><label asp-for="Name"></label><br /><input asp-for="Name" readonly /></p>
+    <p><label asp-for="Email"></label><br /><input asp-for="Email" readonly /></p>
+    <button type="submit">Save</button>
+</form>

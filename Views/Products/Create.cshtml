@@ -1,0 +1,16 @@
+@model Product
+@{ ViewData["Title"] = "Create Product"; }
+<h1>Create Product</h1>
+<form asp-controller="Products" asp-action="Create" method="post">
+    <div asp-validation-summary="All"></div>
+    <p><label asp-for="Name"></label><br /><input asp-for="Name" required maxlength="100" /><span asp-validation-for="Name"></span></p>
+    <p><label asp-for="Description"></label><br /><input asp-for="Description" /><span asp-validation-for="Description"></span></p>
+    <p><label asp-for="Price"></label><br /><input asp-for="Price" type="number" min="0" max="100000" step="any" required /><span asp-validation-for="Price"></span></p>
+    <p>
+        <label asp-for="Type"></label><br />
+        <select asp-for="Type" asp-items="Html.GetEnumSelectList<ProductType>()"></select>
+        <span asp-validation-for="Type"></span>
+    </p>
+    <button type="submit">Save</button>
+</form>
+<p><a asp-action="Index">Back to List</a></p>

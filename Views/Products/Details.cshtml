@@ -1,0 +1,12 @@
+@model Product
+@{ ViewData["Title"] = "Product Details"; }
+<h1>Product Details</h1>
+<dl>
+    <dt>ID</dt><dd>@Model.Id</dd>
+    <dt>Name</dt><dd>@Model.Name</dd>
+    <dt>Price</dt><dd>@Model.Price</dd>
+    <dt>Description</dt><dd>@Model.Description</dd>
+    <dt>Type</dt><dd>@Model.Type</dd>
+</dl>
+<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+<a asp-action="Index">Back to List</a>
