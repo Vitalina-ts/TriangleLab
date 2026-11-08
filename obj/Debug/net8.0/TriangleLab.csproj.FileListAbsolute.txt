@@ -28,3 +28,4 @@ C:\Users\Віталіна\Desktop\С#\TriangleLab\obj\Debug\net8.0\refint\Triang
 C:\Users\Віталіна\Desktop\С#\TriangleLab\obj\Debug\net8.0\TriangleLab.pdb
 C:\Users\Віталіна\Desktop\С#\TriangleLab\obj\Debug\net8.0\TriangleLab.genruntimeconfig.cache
 C:\Users\Віталіна\Desktop\С#\TriangleLab\obj\Debug\net8.0\ref\TriangleLab.dll
+C:\Users\Віталіна\Desktop\С#\TriangleLab\obj\Debug\net8.0\TriangleLab.sourcelink.json

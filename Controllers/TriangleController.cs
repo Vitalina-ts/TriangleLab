@@ -1,4 +1,4 @@
-using System.Globalization;
+
 using Microsoft.AspNetCore.Mvc;
 using TriangleLab.Models;
 
@@ -6,205 +6,135 @@ namespace TriangleLab.Controllers;
 
 public class TriangleController : Controller
 {
-    private IActionResult InvalidTriangle()
+    // Створення трикутника
+    private Triangle Create(double a, double b, double c)
+    {
+        return new Triangle(a, b, c);
+    }
+
+    // Сторінка помилки
+    private IActionResult Error()
     {
         return View("Error");
     }
 
-    private static bool IsTriangleValid(Triangle? triangle)
-    {
-        return triangle != null && triangle.IsValid();
-    }
-
+    // Інформація про трикутник
     public IActionResult Info(double side1, double side2, double side3)
     {
-        var triangle = new Triangle(side1, side2, side3);
+        var t = Create(side1, side2, side3);
 
-        if (!IsTriangleValid(triangle))
-        {
-            return InvalidTriangle();
-        }
+        if (!t.IsValid()) return Error();
 
-        return View(triangle);
+        return View(t);
     }
 
+    // Площа
     public IActionResult Area(double side1, double side2, double side3)
     {
-        var triangle = new Triangle(side1, side2, side3);
+        var t = Create(side1, side2, side3);
 
-        if (!IsTriangleValid(triangle))
-        {
-            return InvalidTriangle();
-        }
+        if (!t.IsValid()) return Error();
 
-        var area = triangle.GetArea();
-        return Content(area.ToString("0.######", CultureInfo.InvariantCulture));
+        return Content(t.GetArea().ToString());
     }
 
+    // Периметр
     public IActionResult Perimeter(double side1, double side2, double side3)
     {
-        var triangle = new Triangle(side1, side2, side3);
+        var t = Create(side1, side2, side3);
 
-        if (!IsTriangleValid(triangle))
-        {
-            return InvalidTriangle();
-        }
+        if (!t.IsValid()) return Error();
 
-        var perimeter = triangle.GetPerimeter();
-        return Content(perimeter.ToString("0.######", CultureInfo.InvariantCulture));
+        return Content(t.GetPerimeter().ToString());
     }
 
+    // Чи прямокутний
     public IActionResult IsRightAngled(double side1, double side2, double side3)
     {
-        var triangle = new Triangle(side1, side2, side3);
+        var t = Create(side1, side2, side3);
 
-        if (!IsTriangleValid(triangle))
-        {
-            return InvalidTriangle();
-        }
+        if (!t.IsValid()) return Error();
 
-        return Content(triangle.IsRightAngled().ToString().ToLowerInvariant());
+        return Content(t.IsRightAngled().ToString().ToLowerInvariant());
     }
 
+    // Чи рівносторонній
     public IActionResult IsEquilateral(double side1, double side2, double side3)
     {
-        var triangle = new Triangle(side1, side2, side3);
+        var t = Create(side1, side2, side3);
 
-        if (!IsTriangleValid(triangle))
-        {
-            return InvalidTriangle();
-        }
+        if (!t.IsValid()) return Error();
 
-        return Content(triangle.IsEquilateral().ToString().ToLowerInvariant());
+        return Content(t.IsEquilateral().ToString().ToLowerInvariant());
     }
 
+    // Чи рівнобедрений
     public IActionResult IsIsosceles(double side1, double side2, double side3)
     {
-        var triangle = new Triangle(side1, side2, side3);
+        var t = Create(side1, side2, side3);
 
-        if (!IsTriangleValid(triangle))
-        {
-            return InvalidTriangle();
-        }
+        if (!t.IsValid()) return Error();
 
-        return Content(triangle.IsIsosceles().ToString().ToLowerInvariant());
+        return Content(t.IsIsosceles().ToString().ToLowerInvariant());
     }
 
+    // Чи рівні трикутники
     public IActionResult AreCongruent(Triangle tr1, Triangle tr2)
     {
-        if (!IsTriangleValid(tr1) || !IsTriangleValid(tr2))
-        {
-            return InvalidTriangle();
-        }
+        if (tr1 == null || tr2 == null ||
+            !tr1.IsValid() || !tr2.IsValid())
+            return Error();
 
         return Content(tr1.IsCongruentTo(tr2).ToString().ToLowerInvariant());
     }
 
+    // Чи подібні трикутники
     public IActionResult AreSimilar(Triangle tr1, Triangle tr2)
     {
-        if (!IsTriangleValid(tr1) || !IsTriangleValid(tr2))
-        {
-            return InvalidTriangle();
-        }
+        if (tr1 == null || tr2 == null ||
+            !tr1.IsValid() || !tr2.IsValid())
+            return Error();
 
         return Content(tr1.IsSimilarTo(tr2).ToString().ToLowerInvariant());
     }
 
-    public IActionResult GreatesByPerimeter(Triangle[] tr)
-    {
-        return GreatestByPerimeter(tr);
-    }
-
+    // Найбільший за периметром
     public IActionResult GreatestByPerimeter(Triangle[] tr)
     {
-        if (tr == null || tr.Length == 0)
-        {
-            return InvalidTriangle();
-        }
+        if (tr == null || tr.Length == 0 ||
+            tr.Any(t => t == null || !t.IsValid()))
+            return Error();
 
-        foreach (var triangle in tr)
-        {
-            if (!IsTriangleValid(triangle))
-            {
-                return InvalidTriangle();
-            }
-        }
+        var best = tr.MaxBy(t => t.GetPerimeter());
 
-        var bestTriangle = tr[0];
-
-        for (var i = 1; i < tr.Length; i++)
-        {
-            if (tr[i].GetPerimeter() > bestTriangle.GetPerimeter())
-            {
-                bestTriangle = tr[i];
-            }
-        }
-
-        return View("TriangleList", new List<Triangle> { bestTriangle });
+        return View("TriangleList", new List<Triangle> { best! });
     }
 
+    // Найбільший за площею
     public IActionResult GreatestByArea(Triangle[] tr)
     {
-        if (tr == null || tr.Length == 0)
-        {
-            return InvalidTriangle();
-        }
+        if (tr == null || tr.Length == 0 ||
+            tr.Any(t => t == null || !t.IsValid()))
+            return Error();
 
-        foreach (var triangle in tr)
-        {
-            if (!IsTriangleValid(triangle))
-            {
-                return InvalidTriangle();
-            }
-        }
+        var best = tr.MaxBy(t => t.GetArea());
 
-        var bestTriangle = tr[0];
-
-        for (var i = 1; i < tr.Length; i++)
-        {
-            if (tr[i].GetArea() > bestTriangle.GetArea())
-            {
-                bestTriangle = tr[i];
-            }
-        }
-
-        return View("TriangleList", new List<Triangle> { bestTriangle });
+        return View("TriangleList", new List<Triangle> { best! });
     }
 
+    // Список попарно неподібних трикутників
     public IActionResult PairwiseNonSimilar(Triangle[] tr)
     {
-        if (tr == null || tr.Length == 0)
-        {
-            return InvalidTriangle();
-        }
-
-        foreach (var triangle in tr)
-        {
-            if (!IsTriangleValid(triangle))
-            {
-                return InvalidTriangle();
-            }
-        }
+        if (tr == null || tr.Length == 0 ||
+            tr.Any(t => t == null || !t.IsValid()))
+            return Error();
 
         var result = new List<Triangle>();
 
-        foreach (var triangle in tr)
+        foreach (var t in tr)
         {
-            var isSimilarToExisting = false;
-
-            foreach (var selectedTriangle in result)
-            {
-                if (triangle.IsSimilarTo(selectedTriangle))
-                {
-                    isSimilarToExisting = true;
-                    break;
-                }
-            }
-
-            if (!isSimilarToExisting)
-            {
-                result.Add(triangle);
-            }
+            if (!result.Any(x => x.IsSimilarTo(t)))
+                result.Add(t);
         }
 
         return View("TriangleList", result);

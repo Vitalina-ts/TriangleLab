@@ -1,0 +1,4 @@
+@using TriangleLab.Services
+@inject ITimeService TimeService
+<h2>It's time to shopping!</h2>
+<p>@TimeService.GetTimeForTomorrow().ToString("dd.MM.yyyy HH:mm:ss")</p>

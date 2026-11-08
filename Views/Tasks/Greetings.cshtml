@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Greetings";
+    var myMessage = "Hello C# Marathon!";
+    var greeting = "Welcome to our project!";
+    var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Europe/Kyiv"));
+    var here = $"Here in Ukraine: {now.DayOfWeek}";
+    var today = $"Today is {now.DayOfWeek}";
+    string wish;
+    if (now.Hour < 12)
+    {
+        wish = "Good Morning!";
+    }
+    else
+    {
+        wish = "Good Evening!";
+    }
+}
+<h1>Greetings</h1>
+<p>The value of myMessage is: @myMessage</p>
+<p>The greeting is: @greeting</p>
+<p>@here</p>
+<p>We wish you: @wish</p>
+<p>@today</p>
+<table>
+    <thead><tr><th>Name</th><th>Value</th></tr></thead>
+    <tbody>
+        <tr><td>Day</td><td>@now.Day</td></tr>
+        <tr><td>Hour</td><td>@now.Hour</td></tr>
+        <tr><td>Minute</td><td>@now.Minute</td></tr>
+        <tr><td>Second</td><td>@now.Second</td></tr>
+    </tbody>
+</table>

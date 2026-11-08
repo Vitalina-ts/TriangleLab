@@ -1,0 +1,34 @@
+@model BulkProductPrices
+@{ ViewData["Title"] = $"Edit {Model.Type} prices"; }
+<h1>Edit @Model.Type prices</h1>
+<form asp-action="EditPrices" asp-route-type="@Model.Type" method="post">
+    <div asp-validation-summary="All"></div>
+    @if (Model.Products.Count == 0)
+    {
+        <p>No products in this category.</p>
+    }
+    else
+    {
+        <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Price</th></tr></thead>
+            <tbody>
+            @for (var i = 0; i < Model.Products.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input asp-for="Products[i].Id" type="hidden" />
+                        @Model.Products[i].Id
+                    </td>
+                    <td><input asp-for="Products[i].Name" readonly /></td>
+                    <td>
+                        <input asp-for="Products[i].Price" type="number" min="0" max="100000" step="any" />
+                        <span asp-validation-for="Products[i].Price"></span>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <button type="submit">Save</button>
+    }
+</form>
+<p><a asp-action="Index">Back to List</a></p>
