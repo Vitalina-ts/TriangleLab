@@ -1,0 +1,28 @@
+@model List<User>
+@{ ViewData["Title"] = "Users"; }
+<h1>Users</h1>
+<p>Create a user only with query string values, for example:
+    <a href="/users/create?id=3&amp;name=Anna&amp;email=anna@example.com">Create Anna</a>
+</p>
+@if (Context.Response.StatusCode == 401)
+{
+    <p>Unauthorized. Enter the access code.</p>
+    <form action="/users/index" method="post">
+        <label for="accessCode">Access code</label>
+        <input id="accessCode" name="accessCode" type="password" />
+        <button type="submit">View users</button>
+    </form>
+}
+else
+{
+    <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th></tr></thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr><td>@user.Id</td><td>@user.Name</td><td>@user.Email</td></tr>
+        }
+        </tbody>
+    </table>
+}
+<p><a asp-controller="Products" asp-action="Index">Back to Products</a></p>

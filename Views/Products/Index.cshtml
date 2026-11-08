@@ -1,0 +1,47 @@
+@model List<Product>
+@{ ViewData["Title"] = "Products"; }
+<h1>Products</h1>
+<p><a asp-action="Create">Create New Product</a></p>
+<p>
+    Edit prices by category:
+    @foreach (var type in Enum.GetValues<ProductType>())
+    {
+        <a asp-action="EditPrices" asp-route-type="@type">@type</a>@(type == Enum.GetValues<ProductType>().Last() ? "" : " | ")
+    }
+</p>
+<form method="get" action="@Context.Request.Path">
+    <p>
+        <label for="name">Name</label>
+        <input id="name" name="name" value="@ViewBag.Name" />
+        <label for="minPrice">Min price</label>
+        <input id="minPrice" name="minPrice" type="number" step="any" value="@(ViewBag.MinPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+        <label for="maxPrice">Max price</label>
+        <input id="maxPrice" name="maxPrice" type="number" step="any" value="@(ViewBag.MaxPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+        <button type="submit">Filter</button>
+        <a href="@Context.Request.Path">Reset</a>
+    </p>
+</form>
+<div asp-validation-summary="All"></div>
+@if (Model.Count == 0)
+{
+    <p>No products found</p>
+}
+else
+{
+    <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Actions</th></tr></thead>
+        <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Id</td><td>@product.Name</td><td>@product.Price</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@product.Id">View</a> |
+                    <a asp-action="Edit" asp-route-id="@product.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@product.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
